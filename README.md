@@ -5,7 +5,6 @@ Run the development server:
 ```bash
 npm install 
 npx prisma generate
-npx prisma migrate
 npm run dev
 ```
 
