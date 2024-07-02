@@ -4,6 +4,26 @@ import {
 	dummyReservations,
 	dummyServices,
 } from "./placeholder-data";
+import type { Review } from "./definitions";
+
+export async function fetchReviews() {
+	try {
+		const response = await fetch("http://localhost:3000/api/review/", {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			cache: "no-cache",
+		});
+
+		const data = await response.json()
+	
+		return data as Review[];
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	} catch (error: any) {
+		throw new Error("Failed to fetch reviews data.", error.message);
+	}
+}
 
 export async function fetchServices() {
 	unstable_noStore();

@@ -14,6 +14,8 @@ import {
 	FormItem,
 	FormMessage,
 } from "@/components/ui/form";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const loginFormSchema = z.object({
 	email: z.string().email(),
@@ -31,8 +33,29 @@ export function LoginForm() {
 		},
 	});
 
-	function onSubmit(data: LoginFormValues) {
-		console.log(data);
+	const router = useRouter();
+
+	async function onSubmit(data: LoginFormValues) {
+		try {
+			const response = await fetch("/api/auth/login", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(data),
+			});
+
+			if (response.status === 200) {
+				toast.success("Logged in successfully");
+				router.push("/");
+			} else if (response.status === 400) {
+				toast.error("Invalid email or password");
+			} else {
+				toast.error("An error occurred");
+			}
+		} catch (error) {
+			toast.error("An error occurred");
+		}
 	}
 
 	return (

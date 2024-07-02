@@ -20,24 +20,37 @@ import {
 	FormLabel,
 	FormMessage,
 } from "./ui/form";
+import { toast } from "sonner";
+import { revalidatePath } from "next/cache";
 
 const reviewFormSchema = z.object({
-	name: z.string(),
 	rating: z.number().int().min(1).max(5),
-	review: z.string(),
+	comment: z.string(),
 });
 
-export function ReviewForm({
-	setReviews,
-}: { setReviews: React.Dispatch<React.SetStateAction<ReviewType[]>> }) {
+export function ReviewForm() {
 	const form = useForm<z.infer<typeof reviewFormSchema>>({
 		resolver: zodResolver(reviewFormSchema),
 	});
 
-	function onSubmit(values: z.infer<typeof reviewFormSchema>) {
-		const review: ReviewType = { ...values, id: Date.now() };
+	async function onSubmit(values: z.infer<typeof reviewFormSchema>) {
+		try {
+			const response = await fetch("/api/review", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(values),
+			});
 
-		setReviews((prevReviews) => [review, ...prevReviews]);
+			if (response.status === 201) {
+				toast.success("Review created successfully");
+			} else {
+				toast.error("An error occurred");
+			}
+		} catch (error) {
+			toast.error("An error occurred");
+		}
 	}
 
 	const [rating, setRating] = React.useState(0);
@@ -45,19 +58,6 @@ export function ReviewForm({
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
-				<FormField
-					control={form.control}
-					name="name"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Name</FormLabel>
-							<FormControl>
-								<Input placeholder="Enter your name" {...field} />
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
 				<FormField
 					control={form.control}
 					name="rating"
@@ -93,7 +93,7 @@ export function ReviewForm({
 				/>
 				<FormField
 					control={form.control}
-					name="review"
+					name="comment"
 					render={({ field }) => (
 						<FormItem>
 							<FormLabel>Review</FormLabel>

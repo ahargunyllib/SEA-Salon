@@ -3,17 +3,18 @@ import type { ReviewType } from "@/lib/placeholder-data";
 import { getInitials } from "@/lib/utils";
 import React from "react";
 import { StarIcon } from "./svg/StarIcon";
+import type { Review } from "@/lib/definitions";
 
-export function ReviewCard({ review }: { review: ReviewType }) {
+export function ReviewCard({ review }: { review: Review }) {
 	return (
 		<div className="flex flex-col justify-center space-y-4">
 			<div className="grid gap-1">
 				<div className="flex items-center gap-2">
 					<Avatar className="w-8 h-8">
-						<AvatarFallback>{getInitials(review.name)}</AvatarFallback>
+						<AvatarFallback>{getInitials(review.user.fullName)}</AvatarFallback>
 					</Avatar>
 					<div>
-						<p className="text-sm font-medium">{review.name}</p>
+						<p className="text-sm font-medium">{review.user.fullName}</p>
 						<div className="flex items-center gap-1 text-yellow-500">
 							{
 								// Loop yellow rating
@@ -37,7 +38,7 @@ export function ReviewCard({ review }: { review: ReviewType }) {
 						</div>
 					</div>
 				</div>
-				<p className="text-muted-foreground">"{review.review}"</p>
+				<p className="text-muted-foreground">"{review.comment}"</p>
 			</div>
 		</div>
 	);

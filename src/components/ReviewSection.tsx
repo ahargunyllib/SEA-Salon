@@ -1,12 +1,11 @@
-"use client";
-
-import { type ReviewType, dummyReviews } from "@/lib/placeholder-data";
-import React from "react";
+import { fetchReviews } from "@/lib/data";
 import { ReviewCard } from "./ReviewCard";
 import { ReviewForm } from "./ReviewForm";
+import type { Review } from "@prisma/client";
+import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
 
-export function ReviewSection() {
-	const [reviews, setReviews] = React.useState<ReviewType[]>(dummyReviews);
+export async function ReviewSection() {
+	const reviews = await fetchReviews();
 
 	return (
 		<section id="reviews" className="w-full py-24 md:py-24 lg:py-32">
@@ -31,7 +30,7 @@ export function ReviewSection() {
 					}
 				</div>
 				<div className="mx-auto max-w-5xl py-12">
-					<ReviewForm setReviews={setReviews} />
+					<ReviewForm />
 				</div>
 			</div>
 		</section>

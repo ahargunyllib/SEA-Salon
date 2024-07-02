@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String @id @default(cuid())
+  fullName    String
+  phoneNumber String
+  email       String @unique
+  password    String
+
+  reviews     Review[]
+  Reservation Reservation[]
+  isAdmin     Boolean
+
+  @@map("users")
+}
+
+model Review {
+  id      String @id @default(cuid())
+  rating  Int
+  comment String
+  userId  String
+  user    User   @relation(fields: [userId], references: [id])
+
+  @@map("reviews")
+}
+
+model Service {
+  id          Int           @id @default(autoincrement())
+  name        String
+  description String
+  duration    Int
+  Branch      Branch?       @relation(fields: [branchId], references: [id])
+  branchId    Int?
+  Reservation Reservation[]
+
+  @@map("services")
+}
+
+model Branch {
+  id          Int           @id @default(autoincrement())
+  name        String
+  location    String
+  openingTime DateTime
+  closingTime DateTime
+  services    Service[]
+  Reservation Reservation[]
+
+  @@map("branches")
+}
+
+model Reservation {
+  id          Int      @id @default(autoincrement())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  name        String
+  phoneNumber String
+  serviceId   Int
+  service     Service  @relation(fields: [serviceId], references: [id])
+  branchId    Int
+  branch      Branch   @relation(fields: [branchId], references: [id])
+  date        DateTime
+  time        DateTime
+
+  @@map("reservations")
+}

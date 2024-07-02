@@ -18,6 +18,7 @@ import { dashboardMenus } from "@/lib/placeholder-data";
 import { CircleUser, Menu } from "lucide-react";
 import Link from "next/link";
 import { SideBar } from "../../components/SideBar";
+import { Logout } from "./Logout";
 
 export default function DashboardLayout({
 	children,
@@ -99,7 +100,7 @@ export default function DashboardLayout({
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align="end">
 								<DropdownMenuItem>
-									<Link href="/">Logout</Link>
+									<Logout />
 								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>

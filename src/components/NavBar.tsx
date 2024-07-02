@@ -19,10 +19,24 @@ import { Sheet, SheetClose, SheetContent, SheetTrigger } from "./ui/sheet";
 
 export function NavBar() {
 	const menus = [
-		{ title: "Services", path: "#services" },
-		{ title: "Reviews", path: "#reviews" },
-		{ title: "Contact", path: "#contact" },
+		{ title: "Home", path: "/" },
+		{ title: "Services", path: "/services" },
+		{ title: "About", path: "/about" },
 	];
+
+	const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+
+	React.useEffect(() => {
+		const fetchData = async () => {
+			const response = await fetch("/api/auth/verify"); 
+
+			if (response.status === 200) {
+				setIsLoggedIn(true);
+			}
+		};
+
+		fetchData();
+	}, []);
 
 	return (
 		<header className="sticky top-0 flex h-16 items-center gap-4 backdrop-blur-lg bg-opacity-10 backdrop-filter">
@@ -97,11 +111,15 @@ export function NavBar() {
 						<DropdownMenuItem>Logout</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu> */}
-				<Button asChild>
-					<Link href="/auth/login">
-						Login
-					</Link>
-				</Button>
+				{isLoggedIn ? (
+					<Button asChild>
+						<Link href="/dashboard/reservation">Dashboard</Link>
+					</Button>
+				) : (
+					<Button asChild>
+						<Link href="/auth/login">Login</Link>
+					</Button>
+				)}
 			</div>
 		</header>
 	);

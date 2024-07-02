@@ -14,21 +14,25 @@ import {
 	FormItem,
 	FormMessage,
 } from "@/components/ui/form";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const phoneRegex = new RegExp(
-  /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/
+	/^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/,
 );
 
 const registerFormSchema = z.object({
 	fullName: z.string().min(1, "Full name is required"),
 	email: z.string().email().min(1, "Email is required"),
-	phoneNumber: z.string().regex(phoneRegex, 'Invalid Number'),
+	phoneNumber: z.string().regex(phoneRegex, "Invalid Number"),
 	password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 type RegisterFormValues = z.infer<typeof registerFormSchema>;
 
 export function RegisterForm() {
+	const router = useRouter();
+
 	const form = useForm<RegisterFormValues>({
 		resolver: zodResolver(registerFormSchema),
 		defaultValues: {
@@ -39,8 +43,27 @@ export function RegisterForm() {
 		},
 	});
 
-	function onSubmit(data: RegisterFormValues) {
-		console.log(data);
+	async function onSubmit(data: RegisterFormValues) {
+		try {
+			const response = await fetch("/api/auth/register", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(data),
+			});
+
+			if (response.status === 201) {
+				toast.success("Account created successfully");
+				router.push("/auth/login");
+			} else if (response.status === 400) {
+				toast.error("Email already exists");
+			} else {
+				toast.error("An error occurred");
+			}
+		} catch (error) {
+			toast.error("An error occurred");
+		}
 	}
 
 	return (
