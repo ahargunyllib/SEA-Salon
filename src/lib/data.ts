@@ -1,27 +1,138 @@
-export type ReviewType = {
-  id: number;
-  name: string;
-  rating: number; // 1-5
-  review: string;
+import { unstable_noStore } from "next/cache";
+import {
+	dummyBranches,
+	dummyReservations,
+	dummyServices,
+} from "./placeholder-data";
+
+export async function fetchServices() {
+	unstable_noStore();
+
+	try {
+		// TODO: REMOVE
+		// await new Promise((resolve) => setTimeout(resolve, 3000));
+
+		const data = dummyServices;
+
+		return data;
+	} catch (error) {
+		throw new Error("Failed to fetch services data.");
+	}
 }
 
-export const dummyReviews: ReviewType[] = [
-  {
-    "id": 1,
-    "name": "John Doe",
-    "rating": 5,
-    "review": "Great product!"
-  },
-  {
-    "id": 2,
-    "name": "Jane Doe",
-    "rating": 4,
-    "review": "Good product!"
-  },
-  {
-    "id": 3,
-    "name": "John Smith",
-    "rating": 3,
-    "review": "Average product!"
-  }
-]
+export async function fetchBranches() {
+	unstable_noStore();
+
+	try {
+		// TODO: REMOVE
+		// await new Promise((resolve) => setTimeout(resolve, 3000));
+
+		const data = dummyBranches;
+		return data;
+	} catch (error) {
+		throw new Error("Failed to fetch branches data.");
+	}
+}
+
+export async function fetchReservations() {
+	unstable_noStore();
+
+	try {
+		// TODO: REMOVE
+		// await new Promise((resolve) => setTimeout(resolve, 3000));
+
+		const data = dummyReservations;
+		return data;
+	} catch (error) {
+		throw new Error("Failed to fetch reservations data.");
+	}
+}
+
+const ITEMS_PER_PAGE = 5;
+export async function fetchFilteredServices(currentPage: number) {
+	unstable_noStore();
+	const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+	try {
+		// TODO: REMOVE
+		// await new Promise((resolve) => setTimeout(resolve, 3000));
+
+		const data = dummyServices.slice(offset, offset + ITEMS_PER_PAGE);
+		return data;
+	} catch (error) {
+		throw new Error("Failed to fetch filtered services data.");
+	}
+}
+
+export async function fetchFilteredBranches(currentPage: number) {
+	unstable_noStore();
+	const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+	try {
+		// TODO: REMOVE
+		// await new Promise((resolve) => setTimeout(resolve, 3000));
+
+		const data = dummyBranches.slice(offset, offset + ITEMS_PER_PAGE);
+		return data;
+	} catch (error) {
+		throw new Error("Failed to fetch filtered branches data.");
+	}
+}
+
+export async function fetchFilteredReservations(currentPage: number) {
+	unstable_noStore();
+	const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+	try {
+		// TODO: REMOVE
+		// await new Promise((resolve) => setTimeout(resolve, 3000));
+
+		const data = dummyReservations.slice(offset, offset + ITEMS_PER_PAGE);
+		return data;
+	} catch (error) {
+		throw new Error("Failed to fetch filtered reservations data.");
+	}
+}
+
+export async function fetchServicesPages() {
+	unstable_noStore();
+
+	try {
+		// TODO: REMOVE
+		// await new Promise((resolve) => setTimeout(resolve, 3000));
+
+		const count = dummyServices.length;
+		const totalPages = Math.ceil(count / ITEMS_PER_PAGE);
+		return totalPages;
+	} catch (error) {
+		throw new Error("Failed to fetch service page.");
+	}
+}
+
+export async function fetchBranchesPages() {
+	unstable_noStore();
+	try {
+		// TODO: REMOVE
+		// await new Promise((resolve) => setTimeout(resolve, 3000));
+
+		const count = dummyBranches.length;
+		const totalPages = Math.ceil(count / ITEMS_PER_PAGE);
+		return totalPages;
+	} catch (error) {
+		throw new Error("Failed to fetch branch page.");
+	}
+}
+
+export async function fetchReservationsPages() {
+	unstable_noStore();
+	try {
+		// TODO: REMOVE
+		// await new Promise((resolve) => setTimeout(resolve, 3000));
+
+		const count = dummyReservations.length;
+		const totalPages = Math.ceil(count / ITEMS_PER_PAGE);
+		return totalPages;
+	} catch (error) {
+		throw new Error("Failed to fetch reservation page.");
+	}
+}

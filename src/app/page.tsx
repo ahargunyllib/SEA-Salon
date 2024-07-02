@@ -1,9 +1,8 @@
-import Link from "next/link";
 import { AvatarImage } from "@/components/ui/avatar";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { ScissorsIcon } from "../components/svg/ScissorsIcon";
-import { Footer } from "../components/Footer";
 import React from "react";
+import { Footer } from "../components/Footer";
+import { NavBar } from "../components/NavBar";
 import { ReviewSection } from "../components/ReviewSection";
 
 export default function Component() {
@@ -57,7 +56,7 @@ function ContactSection() {
 
 function ServiceSection() {
 	return (
-		<section id="services" className="w-full py-12 md:py-24 lg:py-32 bg-muted">
+		<section id="services" className="w-full py-24 md:py-24 lg:py-32 bg-muted">
 			<div className="container px-4 md:px-6">
 				<div className="flex flex-col items-center justify-center space-y-4 text-center">
 					<div className="space-y-2">
@@ -123,43 +122,5 @@ function HeroSection() {
 				</div>
 			</div>
 		</section>
-	);
-}
-
-function NavBar() {
-	return (
-		<header className="px-4 lg:px-6 h-14 flex items-center">
-			<Link
-				href="#"
-				className="flex items-center justify-center"
-				prefetch={false}
-			>
-				<ScissorsIcon className="h-6 w-6" />
-				<span className="text-2xl font-bold">SEA Salon</span>
-			</Link>
-			<nav className="ml-auto flex gap-4 sm:gap-6">
-				<Link
-					href="#"
-					className="text-sm font-medium hover:underline underline-offset-4"
-					prefetch={false}
-				>
-					Services
-				</Link>
-				<Link
-					href="#"
-					className="text-sm font-medium hover:underline underline-offset-4"
-					prefetch={false}
-				>
-					Reviews
-				</Link>
-				<Link
-					href="#"
-					className="text-sm font-medium hover:underline underline-offset-4"
-					prefetch={false}
-				>
-					Contact
-				</Link>
-			</nav>
-		</header>
 	);
 }

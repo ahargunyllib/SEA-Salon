@@ -1,15 +1,15 @@
 "use client";
 
-import { dummyReviews, type ReviewType } from "@/lib/data";
-import { ReviewForm } from "./ReviewForm";
+import { type ReviewType, dummyReviews } from "@/lib/placeholder-data";
 import React from "react";
 import { ReviewCard } from "./ReviewCard";
+import { ReviewForm } from "./ReviewForm";
 
 export function ReviewSection() {
 	const [reviews, setReviews] = React.useState<ReviewType[]>(dummyReviews);
 
 	return (
-		<section id="reviews" className="w-full py-12 md:py-24 lg:py-32">
+		<section id="reviews" className="w-full py-24 md:py-24 lg:py-32">
 			<div className="container px-4 md:px-6">
 				<div className="flex flex-col items-center justify-center space-y-4 text-center">
 					<div className="space-y-2">

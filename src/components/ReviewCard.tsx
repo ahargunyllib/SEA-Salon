@@ -1,8 +1,8 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { StarIcon } from "./svg/StarIcon";
-import type { ReviewType } from "@/lib/data";
+import type { ReviewType } from "@/lib/placeholder-data";
 import { getInitials } from "@/lib/utils";
 import React from "react";
+import { StarIcon } from "./svg/StarIcon";
 
 export function ReviewCard({ review }: { review: ReviewType }) {
 	return (
