@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -7,11 +6,11 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import React from "react";
+import { LoginForm } from "./LoginForm";
 
-export default function LoginForm() {
+export default function LoginPage() {
 	return (
 		<Card className="w-full max-w-sm">
 			<CardHeader>
@@ -21,15 +20,7 @@ export default function LoginForm() {
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="flex flex-col gap-4">
-				<div className="flex flex-col gap-2">
-					<Label htmlFor="email">Email</Label>
-					<Input id="email" type="email" placeholder="m@example.com" required />
-				</div>
-				<div className="flex flex-col gap-2">
-					<Label htmlFor="password">Password</Label>
-					<Input id="password" type="password" required />
-				</div>
-				<Button className="w-full">Sign in</Button>
+				<LoginForm />
 				<div className="mt-4 text-center text-sm">
 					Doesn't have an account?{" "}
 					<Link href="/auth/register" className="underline">

@@ -1,66 +1,182 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-	DialogDescription,
-	DialogHeader,
-	DialogTitle
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import React, { useEffect } from "react";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import {
-	type BranchType,
-	type ServiceType
-} from "@/lib/placeholder-data";
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormMessage,
+} from "@/components/ui/form";
+import type { BranchType, ServiceType } from "@/lib/placeholder-data";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { getTime } from "@/lib/utils";
-import React from "react";
+
+const editBranchFormSchema = z.object({
+	name: z.string().min(1, "Name is required"),
+	location: z.string().min(1, "Location is required"),
+	openingTime: z.string().min(1, "Opening time is required"),
+	closingTime: z.string().min(1, "Closing time is required"),
+	serviceIds: z
+		.array(z.string())
+		.min(1, "At least one service is required")
+		.max(3, "Maximum of 3 services allowed"),
+});
+
+type EditBranchValues = z.infer<typeof editBranchFormSchema>;
 
 export function EditBranchForm({
-	oldBranch, services,
+	oldBranch,
+	services,
 }: {
 	oldBranch: BranchType;
 	services: ServiceType[];
 }) {
-	return <DialogHeader>
-		<DialogTitle>Edit branch</DialogTitle>
-		<DialogDescription>
-			Fill in the form below to edit the branch
-		</DialogDescription>
-		<div className="flex flex-col gap-4">
-			<div className="flex flex-col gap-2">
-				<Label>Name</Label>
-				<Input placeholder={oldBranch.name} />
-			</div>
-			<div className="flex flex-col gap-2">
-				<Label>Location</Label>
-				<Input placeholder={oldBranch.location} />
-			</div>
-			<div className="flex flex-row gap-4 justify-between">
-				<div className="flex flex-col gap-2 w-full">
-					<Label>Opening Time</Label>
-					<Input
-						type="time"
-						placeholder={getTime(oldBranch.openingTime)} />
-				</div>
-				<div className="flex flex-col gap-2 w-full">
-					<Label>Closing Time</Label>
-					<Input
-						type="time"
-						placeholder={getTime(oldBranch.closingTime)} />
-				</div>
-			</div>
-			<div className="flex flex-col gap-2">
-				<Label>Services</Label>
-				<div className="flex flex-row flex-wrap gap-4">
-					{services.map((service) => (
-						<div key={service.id} className="flex flex-row gap-2">
-							<Checkbox />
-							<Label>{service.name}</Label>
-						</div>
-					))}
-				</div>
-			</div>
-			<Button type="submit">Edit</Button>
-		</div>
-	</DialogHeader>;
+	const form = useForm<EditBranchValues>({
+		resolver: zodResolver(editBranchFormSchema),
+		defaultValues: {
+			name: oldBranch.name,
+			location: oldBranch.location,
+			openingTime: getTime(oldBranch.openingTime),
+			closingTime: getTime(oldBranch.closingTime),
+			serviceIds: oldBranch.services.map((service) => service.id.toString()),
+		},
+	});
+
+	function onSubmit(data: EditBranchValues) {
+		console.log(data);
+	}
+
+	return (
+		<React.Fragment>
+			<Form {...form}>
+				<form
+					onSubmit={form.handleSubmit(onSubmit)}
+					className="flex flex-col gap-4"
+				>
+					<FormField
+						control={form.control}
+						name="name"
+						render={({ field }) => (
+							<FormItem>
+								<Label>Name</Label>
+								<FormControl>
+									<Input placeholder="Enter name" {...field} />
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="location"
+						render={({ field }) => (
+							<FormItem>
+								<Label>Location</Label>
+								<FormControl>
+									<Input placeholder="Enter location" {...field} />
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<div className="flex flex-row gap-4 justify-between">
+					<FormField
+						control={form.control}
+						name="openingTime"
+						render={({ field }) => (
+							<FormItem className="flex flex-col gap-2 w-full">
+								<Label>Opening Time</Label>
+								<FormControl>
+									<Input
+										type="time"
+										placeholder="Enter your opening time"
+										{...field}
+									/>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="closingTime"
+						render={({ field }) => (
+							<FormItem className="flex flex-col gap-2 w-full">
+								<Label>Closing Time</Label>
+								<FormControl>
+									<Input
+										type="time"
+										placeholder="Enter your closing time"
+										{...field}
+									/>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					</div>
+					<FormField
+						control={form.control}
+						name="serviceIds"
+						render={({ field }) => (
+							<FormItem>
+								<Label>Services</Label>
+								<div className="flex flex-row flex-wrap gap-x-4 gap-y-2">
+									{services.map((service) => (
+										<FormField
+											key={service.id}
+											control={form.control}
+											name="serviceIds"
+											render={({ field }) => (
+												<FormItem key={service.id} className="space-y-0 flex flex-row gap-2 justify-center items-center">
+													<FormControl>
+														<Checkbox
+															checked={field.value?.includes(
+																service.id.toString(),
+															)}
+															onCheckedChange={(checked) =>
+																checked
+																	? field.onChange([
+																			...field.value,
+																			service.id.toString(),
+																		])
+																	: field.onChange(
+																			field.value?.filter(
+																				(id) => id !== service.id.toString(),
+																			),
+																		)
+															}
+														/>
+													</FormControl>
+													<Label>{service.name}</Label>
+												</FormItem>
+											)}
+										/>
+									))}
+								</div>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<Button className="w-full" type="submit">
+						Edit
+					</Button>
+				</form>
+			</Form>
+		</React.Fragment>
+	);
 }

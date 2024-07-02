@@ -12,7 +12,7 @@ import { TableCaption, TableFooter } from "@/components/ui/table";
 import { fetchBranches, fetchReservationsPages } from "@/lib/data";
 import { Suspense } from "react";
 import { CustomPagination } from "../../../components/CustomPagination";
-import { NewReservationForm } from "./NewReservationForm";
+import { NewReservationDialog } from "./NewReservationDialog";
 import { ReservationTable } from "./ReservationTable";
 import { ReservationTableSkeleton } from "./ReservationTableSkeleton";
 
@@ -38,7 +38,7 @@ export default async function ReservationPage({
 							<Button type="button">Add Reservation</Button>
 						</DialogTrigger>
 						<DialogContent className="max-w-sm my-4">
-							<NewReservationForm branches={branches} />
+							<NewReservationDialog branches={branches} />
 						</DialogContent>
 					</Dialog>
 				</div>

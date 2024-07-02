@@ -15,7 +15,7 @@ import React, { Suspense } from "react";
 import { CustomPagination } from "../../../components/CustomPagination";
 import { BranchTable } from "./BranchTable";
 import { BranchTableSkeleton } from "./BranchTableSkeleton";
-import { NewBranchForm } from "./NewBranchForm";
+import { NewBranchDialog } from "./NewBranchDialog";
 
 export default async function BranchPage({
 	searchParams,
@@ -39,7 +39,7 @@ export default async function BranchPage({
 							<Button type="button">Add Branch</Button>
 						</DialogTrigger>
 						<DialogContent className="max-w-sm my-4">
-							<NewBranchForm services={services} />
+							<NewBranchDialog services={services} />
 						</DialogContent>
 					</Dialog>
 				</div>

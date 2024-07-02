@@ -19,7 +19,7 @@ import { TableCaption, TableFooter } from "@/components/ui/table";
 import { fetchServicesPages } from "@/lib/data";
 import { Suspense } from "react";
 import { CustomPagination } from "../../../components/CustomPagination";
-import { NewServiceForm } from "./NewServiceForm";
+import { NewServiceDialog } from "./NewServiceDialog";
 import { ServiceTable } from "./ServiceTable";
 import { ServiceTableSkeleton } from "./ServiceTableSkeleton";
 
@@ -44,7 +44,7 @@ export default async function ServicePage({
 							<Button type="button">Add Service</Button>
 						</DialogTrigger>
 						<DialogContent className="max-w-sm my-4">
-							<NewServiceForm />
+							<NewServiceDialog />
 						</DialogContent>
 					</Dialog>
 				</div>

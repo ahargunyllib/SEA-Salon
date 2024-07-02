@@ -12,10 +12,7 @@ import {
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import {
-	Dialog,
-	DialogContent,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -30,7 +27,7 @@ import {
 } from "@/lib/placeholder-data";
 import { EllipsisIcon } from "lucide-react";
 import React from "react";
-import { EditBranchForm } from "./EditBranchForm";
+import { EditBranchDialog } from "./EditBranchDialog";
 
 export async function BranchDropdown({
 	oldBranch,
@@ -59,7 +56,7 @@ export async function BranchDropdown({
 
 			<Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
 				<DialogContent>
-					<EditBranchForm oldBranch={oldBranch} services={services} />
+					<EditBranchDialog oldBranch={oldBranch} services={services} />
 				</DialogContent>
 			</Dialog>
 
@@ -82,4 +79,3 @@ export async function BranchDropdown({
 		</React.Fragment>
 	);
 }
-

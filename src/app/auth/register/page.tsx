@@ -10,8 +10,9 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { RegisterForm } from "./RegisterForm";
 
-export default function LoginForm() {
+export default function RegisterPage() {
 	return (
 		<Card className="w-full max-w-sm">
 			<CardHeader>
@@ -21,37 +22,7 @@ export default function LoginForm() {
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
-				<div className="flex flex-col gap-4">
-					<div className="flex flex-col gap-2">
-						<Label htmlFor="full-name">Full name</Label>
-						<Input id="full-name" placeholder="Full name" required />
-					</div>
-					<div className="flex flex-col gap-2">
-						<Label htmlFor="email">Email</Label>
-						<Input
-							id="email"
-							type="email"
-							placeholder="m@example.com"
-							required
-						/>
-					</div>
-					<div className="flex flex-col gap-2">
-						<Label htmlFor="phoneNumber">Phone Number</Label>
-						<Input
-							id="phoneNumber"
-							type="phoneNumber"
-							placeholder="08123456789"
-							required
-						/>
-					</div>
-					<div className="flex flex-col gap-2">
-						<Label htmlFor="password">Password</Label>
-						<Input id="password" type="password" />
-					</div>
-					<Button type="submit" className="w-full">
-						Create an account
-					</Button>
-				</div>
+				<RegisterForm />
 				<div className="mt-4 text-center text-sm">
 					Already have an account?{" "}
 					<Link href="/auth/login" className="underline">

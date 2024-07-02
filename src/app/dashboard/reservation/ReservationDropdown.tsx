@@ -29,7 +29,7 @@ import type {
 } from "@/lib/placeholder-data";
 import { EllipsisIcon } from "lucide-react";
 import React from "react";
-import { EditReservationForm } from "./EditReservationForm";
+import { EditReservationDialog } from "./EditReservationDialog";
 
 export function ReservationDropdown({
 	oldReservation,
@@ -44,7 +44,7 @@ export function ReservationDropdown({
 	return (
 		<React.Fragment>
 			<DropdownMenu>
-				<DropdownMenuTrigger>
+				<DropdownMenuTrigger asChild>
 					<Button variant="ghost" size="icon" className="h-7 w-7">
 						<EllipsisIcon className="h-5 w-5" strokeWidth={1} />
 					</Button>
@@ -61,7 +61,7 @@ export function ReservationDropdown({
 
 			<Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
 				<DialogContent>
-					<EditReservationForm branches={branches}/>
+					<EditReservationDialog oldReservation={oldReservation} branches={branches}/>
 				</DialogContent>
 			</Dialog>
 

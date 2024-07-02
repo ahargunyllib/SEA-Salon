@@ -1,112 +1,186 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  DialogDescription,
-  DialogHeader,
-  DialogTitle
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import React, { useEffect } from "react";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger
-} from "@/components/ui/popover";
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormMessage,
+} from "@/components/ui/form";
+import type { BranchType, ReservationType } from "@/lib/placeholder-data";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
 } from "@/components/ui/select";
-import type { BranchType } from "@/lib/placeholder-data";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
-import React from "react";
+import { getDate, getTime } from "@/lib/utils";
 
-export function EditReservationForm({ branches }: { branches: BranchType[]; }) {
-  const [date, setDate] = React.useState<Date>();
+const phoneRegex = new RegExp(
+	/^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/,
+);
 
-  return <DialogHeader>
-    <DialogTitle>Edit reservation</DialogTitle>
-    <DialogDescription>
-      Fill in the form below to edit the reservation
-    </DialogDescription>
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2">
-        <Label>Name</Label>
-        <Input />
-      </div>
-      <div className="flex flex-col gap-2">
-        <Label>Phone Number</Label>
-        <Input type="number" />
-      </div>
-      <div className="flex flex-col gap-2">
-        <Label>Type of Service</Label>
-        <Select>
-          <SelectTrigger>
-            <SelectValue placeholder="Select a service" />
-          </SelectTrigger>
-          <SelectContent>
-            {
-              // TODO:
-              branches[0].services.map((service) => (
-                <SelectItem
-                  key={service.id}
-                  value={service.id.toString()}
-                >
-                  {service.name}
-                </SelectItem>
-              ))}
-          </SelectContent>
-        </Select>
-      </div>
-      <div className="flex flex-col gap-2">
-        <Label>Date</Label>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant={"outline"}
-              className={cn(
-                "w-full justify-start text-left font-normal",
-                !date && "text-muted-foreground"
-              )}
-            >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {date ? format(date, "PPP") : <span>Pick a date</span>}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0">
-            <Calendar
-              mode="single"
-              selected={date}
-              onSelect={setDate}
-              initialFocus />
-          </PopoverContent>
-        </Popover>
-      </div>
-      <div className="flex flex-col gap-2">
-        <Label>Time</Label>
-        <Input type="time" />
-      </div>
-      <div className="flex flex-col gap-2">
-        <Label>Branch</Label>
-        <Select>
-          <SelectTrigger>
-            <SelectValue placeholder="Select a branch" />
-          </SelectTrigger>
-          <SelectContent>
-            {branches.map((branch) => (
-              <SelectItem key={branch.id} value={branch.id.toString()}>
-                {branch.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-      <Button type="submit">Edit</Button>
-    </div>
-  </DialogHeader>;
+const editReservationFormSchema = z.object({
+	name: z.string().min(1, "Name is required"),
+	phoneNumber: z.string().regex(phoneRegex, "Invalid Number"),
+	date: z.string().min(1, "Date is required"),
+	time: z.string().min(1, "Time is required"),
+	branchId: z.string().min(1, "Branch is required"),
+	serviceId: z.string().min(1, "Service is required"),
+});
+
+type EditReservationValues = z.infer<typeof editReservationFormSchema>;
+
+export function EditReservationForm({
+	oldReservation,
+	branches,
+}: {
+	oldReservation: ReservationType;
+	branches: BranchType[];
+}) {
+	const form = useForm<EditReservationValues>({
+		resolver: zodResolver(editReservationFormSchema),
+		defaultValues: {
+			name: oldReservation.name,
+			phoneNumber: oldReservation.phoneNumber,
+			date: getDate(oldReservation.date),
+			time: getTime(oldReservation.time),
+			branchId: oldReservation.branch.id.toString(),
+			serviceId: oldReservation.service.id.toString(),
+		},
+	});
+
+	const branchId = form.watch("branchId");
+
+	function onSubmit(data: EditReservationValues) {
+		console.log(data);
+	}
+
+	return (
+		<React.Fragment>
+			<Form {...form}>
+				<form
+					onSubmit={form.handleSubmit(onSubmit)}
+					className="flex flex-col gap-4"
+				>
+					<FormField
+						control={form.control}
+						name="name"
+						render={({ field }) => (
+							<FormItem>
+								<Label>Name</Label>
+								<FormControl>
+									<Input placeholder="Enter your name" {...field} />
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="phoneNumber"
+						render={({ field }) => (
+							<FormItem>
+								<Label>Phone Number</Label>
+								<FormControl>
+									<Input placeholder="Enter your phone number" {...field} />
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="date"
+						render={({ field }) => (
+							<FormItem>
+								<Label>Date</Label>
+								<FormControl>
+									<Input type="date" placeholder="Enter date" {...field} />
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="time"
+						render={({ field }) => (
+							<FormItem>
+								<Label>Time</Label>
+								<FormControl>
+									<Input type="time" placeholder="Enter time" {...field} />
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="branchId"
+						render={({ field }) => (
+							<FormItem>
+								<Label>Branch</Label>
+								<Select onValueChange={field.onChange} defaultValue={field.value}>
+									<FormControl>
+										<SelectTrigger>
+											<SelectValue placeholder="Select a branch" />
+										</SelectTrigger>
+									</FormControl>
+									<SelectContent>
+										{branches.map((branch) => (
+											<SelectItem key={branch.id} value={branch.id.toString()}>
+												{branch.name}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="serviceId"
+						render={({ field }) => (
+							<FormItem>
+								<Label>Service</Label>
+								<Select onValueChange={field.onChange} defaultValue={field.value}>
+									<FormControl>
+										<SelectTrigger>
+											<SelectValue placeholder="Select a service" />
+										</SelectTrigger>
+									</FormControl>
+									<SelectContent>
+										{branches
+											.find((branch) => branch.id.toString() === branchId)
+											?.services.map((service) => (
+												<SelectItem
+													key={service.id}
+													value={service.id.toString()}
+												>
+													{service.name}
+												</SelectItem>
+											))}
+									</SelectContent>
+								</Select>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<Button className="w-full" type="submit">
+						Edit
+					</Button>
+				</form>
+			</Form>
+		</React.Fragment>
+	);
 }

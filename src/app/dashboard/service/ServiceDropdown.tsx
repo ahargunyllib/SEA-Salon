@@ -12,10 +12,7 @@ import {
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import {
-	Dialog,
-	DialogContent,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -25,7 +22,7 @@ import {
 import type { ServiceType } from "@/lib/placeholder-data";
 import { EllipsisIcon } from "lucide-react";
 import React from "react";
-import { EditServiceForm } from "./EditServiceForm";
+import { EditServiceDialog } from "./EditServiceDialog";
 
 export function ServiceDropdown({
 	oldService,
@@ -38,7 +35,7 @@ export function ServiceDropdown({
 	return (
 		<React.Fragment>
 			<DropdownMenu>
-				<DropdownMenuTrigger>
+				<DropdownMenuTrigger asChild>
 					<Button variant="ghost" size="icon" className="h-7 w-7">
 						<EllipsisIcon className="h-5 w-5" strokeWidth={1} />
 					</Button>
@@ -55,7 +52,7 @@ export function ServiceDropdown({
 
 			<Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
 				<DialogContent>
-					<EditServiceForm oldService={oldService} />
+					<EditServiceDialog oldService={oldService} />
 				</DialogContent>
 			</Dialog>
 
@@ -78,4 +75,3 @@ export function ServiceDropdown({
 		</React.Fragment>
 	);
 }
-
