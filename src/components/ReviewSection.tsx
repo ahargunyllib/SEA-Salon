@@ -1,11 +1,23 @@
+"use client";
+
 import { fetchReviews } from "@/lib/data";
 import { ReviewCard } from "./ReviewCard";
 import { ReviewForm } from "./ReviewForm";
-import type { Review } from "@prisma/client";
 import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
+import React from "react";
+import type { Review } from "@/lib/definitions";
 
 export async function ReviewSection() {
-	const reviews = await fetchReviews();
+	const [reviews, setReviews] = React.useState<Review[]>([]);
+	
+	React.useEffect(() => {
+		async function getReviews(){
+			const data = await fetchReviews();
+			setReviews(data);
+		}
+
+		getReviews();
+	}, []);
 
 	return (
 		<section id="reviews" className="w-full py-24 md:py-24 lg:py-32">
@@ -22,12 +34,14 @@ export async function ReviewSection() {
 					</div>
 				</div>
 				<div className="mx-auto grid max-w-5xl items-center gap-6 py-12 lg:grid-cols-2 lg:gap-12">
-					{
+					{reviews.length === 0 ? (
+						<p className="text-muted-foreground">No reviews yet</p>
+					) : (
 						// Loop reviews
 						reviews.map((review) => (
 							<ReviewCard key={review.id} review={review} />
 						))
-					}
+					)}
 				</div>
 				<div className="mx-auto max-w-5xl py-12">
 					<ReviewForm />

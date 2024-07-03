@@ -5,23 +5,21 @@ import {
 	dummyServices,
 } from "./placeholder-data";
 import type { Review } from "./definitions";
+import { axiosInstance } from "./axios";
 
 export async function fetchReviews() {
 	try {
-		const response = await fetch("http://localhost:3000/api/review/", {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			cache: "no-cache",
-		});
+		const response = await axiosInstance.get("/review")
+		const data = response.data;
 
-		const data = await response.json()
+		if (!data) {
+			throw new Error("Failed to fetch reviews data.");
+		}
 	
 		return data as Review[];
 		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	} catch (error: any) {
-		throw new Error("Failed to fetch reviews data.", error.message);
+		throw new Error(error.message);
 	}
 }
 
