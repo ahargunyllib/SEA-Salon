@@ -2,28 +2,6 @@ import { db } from "@/lib/prisma";
 import { jwtVerify } from "jose";
 import type { NextRequest } from "next/server";
 
-export async function GET(request: NextRequest) {
-	const data = await db.review.findMany({
-		select: {
-			id: true,
-			comment: true,
-			rating: true,
-			user: {
-				select: {
-					fullName: true,
-				},
-			},
-		},
-	});
-
-	return new Response(JSON.stringify(data), {
-		status: 200,
-		headers: {
-			"Content-Type": "application/json",
-		},
-	});
-}
-
 export async function POST(request: NextRequest) {
   const { comment, rating } = await request.json();
 
@@ -38,7 +16,7 @@ export async function POST(request: NextRequest) {
 
   const { payload } = await jwtVerify(
     token,
-    new TextEncoder().encode("thisisverysecret"),
+    new TextEncoder().encode(jwtSecret),
   );
 
   if (!payload) {
@@ -56,8 +34,6 @@ export async function POST(request: NextRequest) {
       userId
     },
   });
-
-  
 
   return new Response(JSON.stringify(data), {
     status: 201,

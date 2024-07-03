@@ -10,7 +10,7 @@ async function main() {
 			password: await bcrypt.hash("password", 10),
 			fullName: "Nugraha Billy Viandy",
 			phoneNumber: "0812345678",
-			isAdmin: false
+			isAdmin: false,
 		},
 	});
 
@@ -20,7 +20,7 @@ async function main() {
 			password: await bcrypt.hash("Admin123", 10),
 			fullName: "Thomas N",
 			phoneNumber: "08123456789",
-			isAdmin: true
+			isAdmin: true,
 		},
 	});
 
@@ -38,7 +38,13 @@ async function main() {
 			name: "Service 1",
 			description: "Description 1",
 			duration: 30,
+		},
+	});
+
+	const _branchServices = await db.branchService.create({
+		data: {
 			branchId: branch.id,
+			serviceId: service.id,
 		},
 	});
 

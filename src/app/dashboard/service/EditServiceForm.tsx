@@ -14,28 +14,50 @@ import {
 	FormItem,
 	FormMessage,
 } from "@/components/ui/form";
-import type { ServiceType } from "@/lib/placeholder-data";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import type { Service } from "@/lib/definitions";
 
 const editServiceFormSchema = z.object({
 	name: z.string().min(1, "Name is required"),
 	description: z.string().min(1, "Description is required"),
-	duration: z.number().int().min(1, "Duration must be at least 1 minute"),
+	duration: z.string().min(1, "Duration is required"),
 });
 
 type EditServiceValues = z.infer<typeof editServiceFormSchema>;
 
-export function EditServiceForm({ oldService }: { oldService: ServiceType }) {
+export function EditServiceForm({ oldService }: { oldService: Service }) {
+	const router = useRouter();
+	
 	const form = useForm<EditServiceValues>({
 		resolver: zodResolver(editServiceFormSchema),
 		defaultValues: {
 			name: oldService.name,
 			description: oldService.description,
-			duration: oldService.duration,
+			duration: oldService.duration.toString(),
 		},
 	});
 
-	function onSubmit(data: EditServiceValues) {
-		console.log(data);
+	async function onSubmit(data: EditServiceValues) {
+		try {
+			const response = await fetch(`/api/service/${oldService.id}`, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(data),
+			});
+
+			if (response.status === 200) {
+				toast.success("Service edited successfully");
+				router.refresh();
+				form.reset();
+			} else {
+				toast.error("An error occurred");
+			}
+		} catch (error) {
+			toast.error("An error occurred");
+		}
 	}
 
 	return (

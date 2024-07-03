@@ -19,18 +19,39 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { ServiceType } from "@/lib/placeholder-data";
 import { EllipsisIcon } from "lucide-react";
 import React from "react";
 import { EditServiceDialog } from "./EditServiceDialog";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import type { Service } from "@/lib/definitions";
 
 export function ServiceDropdown({
 	oldService,
 }: {
-	oldService: ServiceType;
+	oldService: Service;
 }) {
 	const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
+
+	const router = useRouter();
+
+	async function onClick() {
+		try {
+			const response = await fetch(`/api/service/${oldService.id}`, {
+				method: "DELETE",
+			});
+
+			if (response.status === 200) {
+				toast.success("Service deleted successfully");
+				router.refresh();
+			} else {
+				toast.error("An error occurred");
+			}
+		} catch (error) {
+			toast.error("An error occurred");
+		}
+	}
 
 	return (
 		<React.Fragment>
@@ -66,8 +87,11 @@ export function ServiceDropdown({
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<AlertDialogAction className="bg-destructive">
-							Continue
+						<AlertDialogAction
+							className="bg-destructive"
+							onClick={() => onClick()}
+						>
+							Yes
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>

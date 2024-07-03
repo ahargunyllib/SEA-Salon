@@ -1,13 +1,23 @@
 "use client";
 
 import { ScissorsIcon } from "@/components/svg/ScissorsIcon";
-import { dashboardMenus } from "@/lib/placeholder-data";
 import { cn } from "@/lib/utils";
+import { FileCheck2Icon, HeartHandshakeIcon, MapPinIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export function SideBar() {
 	const pathname = usePathname();
+
+	const dashboardMenus = [
+		{ title: "Services", path: "/dashboard/service", icon: HeartHandshakeIcon },
+		{ title: "Branch", path: "/dashboard/branch", icon: MapPinIcon },
+		{
+			title: "Reservation",
+			path: "/dashboard/reservation",
+			icon: FileCheck2Icon,
+		},
+	];
 
 	return (
 		<nav className="w-64 hidden flex-col gap-4 px-4 py-8 text-lg font-medium md:flex bg-muted">

@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React, { useEffect } from "react";
+import React from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -14,7 +14,6 @@ import {
 	FormItem,
 	FormMessage,
 } from "@/components/ui/form";
-import type { BranchType } from "@/lib/placeholder-data";
 import {
 	Select,
 	SelectContent,
@@ -22,6 +21,9 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import type { Branch } from "@/lib/definitions";
 
 const phoneRegex = new RegExp(
 	/^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/,
@@ -41,8 +43,10 @@ type NewReservationValues = z.infer<typeof newReservationFormSchema>;
 export function NewReservationForm({
 	branches,
 }: {
-	branches: BranchType[];
+	branches: Branch[];
 }) {
+	const router = useRouter();
+
 	const form = useForm<NewReservationValues>({
 		resolver: zodResolver(newReservationFormSchema),
 		defaultValues: {
@@ -57,8 +61,26 @@ export function NewReservationForm({
 
 	const branchId = form.watch("branchId");
 
-	function onSubmit(data: NewReservationValues) {
-		console.log(data);
+	async function onSubmit(data: NewReservationValues) {
+		try {
+			const response = await fetch("/api/reservation", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(data),
+			});
+
+			if (response.status === 201) {
+				toast.success("Reservation created successfully");
+				router.refresh();
+				form.reset();
+			} else {
+				toast.error("An error occurred");
+			}
+		} catch (error) {
+			toast.error("An error occurred");
+		}
 	}
 
 	return (

@@ -14,7 +14,6 @@ import {
 	FormItem,
 	FormMessage,
 } from "@/components/ui/form";
-import type { BranchType, ReservationType } from "@/lib/placeholder-data";
 import {
 	Select,
 	SelectContent,
@@ -23,6 +22,9 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { getDate, getTime } from "@/lib/utils";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import type { Branch, Reservation } from "@/lib/definitions";
 
 const phoneRegex = new RegExp(
 	/^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/,
@@ -43,15 +45,17 @@ export function EditReservationForm({
 	oldReservation,
 	branches,
 }: {
-	oldReservation: ReservationType;
-	branches: BranchType[];
+	oldReservation: Reservation;
+	branches: Branch[];
 }) {
+	const router = useRouter();
+
 	const form = useForm<EditReservationValues>({
 		resolver: zodResolver(editReservationFormSchema),
 		defaultValues: {
 			name: oldReservation.name,
 			phoneNumber: oldReservation.phoneNumber,
-			date: getDate(oldReservation.date),
+			date: "",
 			time: getTime(oldReservation.time),
 			branchId: oldReservation.branch.id.toString(),
 			serviceId: oldReservation.service.id.toString(),
@@ -60,8 +64,26 @@ export function EditReservationForm({
 
 	const branchId = form.watch("branchId");
 
-	function onSubmit(data: EditReservationValues) {
-		console.log(data);
+	async function onSubmit(data: EditReservationValues) {
+		try {
+			const response = await fetch(`/api/reservation/${oldReservation.id}`, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(data),
+			});
+
+			if (response.status === 200) {
+				toast.success("Reservation created successfully");
+				router.refresh();
+				form.reset();
+			} else {
+				toast.error("An error occurred");
+			}
+		} catch (error) {
+			toast.error("An error occurred");
+		}
 	}
 
 	return (

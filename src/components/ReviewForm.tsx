@@ -5,10 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import type { ReviewType } from "@/lib/placeholder-data";
 import { cn } from "@/lib/utils";
 import React from "react";
 import { StarIcon } from "./svg/StarIcon";
@@ -21,7 +18,6 @@ import {
 	FormMessage,
 } from "./ui/form";
 import { toast } from "sonner";
-import { revalidatePath } from "next/cache";
 
 const reviewFormSchema = z.object({
 	rating: z.number().int().min(1).max(5),

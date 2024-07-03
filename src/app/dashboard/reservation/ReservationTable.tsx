@@ -7,7 +7,6 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { fetchBranches, fetchFilteredReservations } from "@/lib/data";
-import { dummyReservations } from "@/lib/placeholder-data";
 import { getDate, getTime } from "@/lib/utils";
 import { ReservationDropdown } from "./ReservationDropdown";
 

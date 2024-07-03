@@ -14,27 +14,49 @@ import {
 	FormItem,
 	FormMessage,
 } from "@/components/ui/form";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const newServiceFormSchema = z.object({
 	name: z.string().min(1, "Name is required"),
 	description: z.string().min(1, "Description is required"),
-	duration: z.number().int().min(1, "Duration must be at least 1 minute"),
+	duration: z.string().min(1, "Duration is required")
 });
 
 type NewServiceValues = z.infer<typeof newServiceFormSchema>;
 
 export function NewServiceForm() {
+	const router = useRouter();
+
 	const form = useForm<NewServiceValues>({
 		resolver: zodResolver(newServiceFormSchema),
 		defaultValues: {
 			name: "",
 			description: "",
-			duration: 0,
+			duration: "0",
 		},
 	});
 
-	function onSubmit(data: NewServiceValues) {
-		console.log(data);
+	async function onSubmit(data: NewServiceValues) {
+		try {
+			const response = await fetch("/api/service", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(data),
+			});
+
+			if (response.status === 201) {
+				toast.success("Service created successfully");
+				router.refresh();
+				form.reset();
+			} else {
+				toast.error("An error occurred");
+			}
+		} catch (error) {
+			toast.error("An error occurred");
+		}
 	}
 
 	return (

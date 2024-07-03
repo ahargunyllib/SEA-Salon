@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React, { useEffect } from "react";
+import React from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -14,16 +14,11 @@ import {
 	FormItem,
 	FormMessage,
 } from "@/components/ui/form";
-import type { BranchType, ServiceType } from "@/lib/placeholder-data";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { getTime } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import type { Branch, Service } from "@/lib/definitions";
 
 const editBranchFormSchema = z.object({
 	name: z.string().min(1, "Name is required"),
@@ -42,9 +37,11 @@ export function EditBranchForm({
 	oldBranch,
 	services,
 }: {
-	oldBranch: BranchType;
-	services: ServiceType[];
+	oldBranch: Branch;
+	services: Service[];
 }) {
+	const router = useRouter();
+
 	const form = useForm<EditBranchValues>({
 		resolver: zodResolver(editBranchFormSchema),
 		defaultValues: {
@@ -56,8 +53,26 @@ export function EditBranchForm({
 		},
 	});
 
-	function onSubmit(data: EditBranchValues) {
-		console.log(data);
+	async function onSubmit(data: EditBranchValues) {
+		try {
+			const response = await fetch(`/api/branch/${oldBranch.id}`, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(data),
+			});
+
+			if (response.status === 200) {
+				toast.success("Branch edited successfully");
+				router.refresh();
+				form.reset();
+			} else {
+				toast.error("An error occurred");
+			}
+		} catch (error) {
+			toast.error("An error occurred");
+		}
 	}
 
 	return (

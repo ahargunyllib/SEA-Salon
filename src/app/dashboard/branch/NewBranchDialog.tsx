@@ -9,10 +9,10 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { ServiceType } from "@/lib/placeholder-data";
 import { NewBranchForm } from "./NewBranchForm";
+import type { Service } from "@/lib/definitions";
 
-export function NewBranchDialog({ services }: { services: ServiceType[] }) {
+export function NewBranchDialog({ services }: { services: Service[] }) {
 	return (
 		<DialogHeader>
 			<DialogTitle>Add new branch</DialogTitle>

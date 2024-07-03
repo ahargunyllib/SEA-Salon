@@ -1,23 +1,9 @@
-"use client";
-
 import { fetchReviews } from "@/lib/data";
 import { ReviewCard } from "./ReviewCard";
 import { ReviewForm } from "./ReviewForm";
-import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
-import React from "react";
-import type { Review } from "@/lib/definitions";
 
 export async function ReviewSection() {
-	const [reviews, setReviews] = React.useState<Review[]>([]);
-	
-	React.useEffect(() => {
-		async function getReviews(){
-			const data = await fetchReviews();
-			setReviews(data);
-		}
-
-		getReviews();
-	}, []);
+	const reviews = await fetchReviews();
 
 	return (
 		<section id="reviews" className="w-full py-24 md:py-24 lg:py-32">

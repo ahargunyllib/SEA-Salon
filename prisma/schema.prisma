@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
 model User {
@@ -35,27 +36,36 @@ model Review {
 }
 
 model Service {
-  id          Int           @id @default(autoincrement())
-  name        String
-  description String
-  duration    Int
-  Branch      Branch?       @relation(fields: [branchId], references: [id])
-  branchId    Int?
-  Reservation Reservation[]
+  id            Int             @id @default(autoincrement())
+  name          String
+  description   String
+  duration      Int
+  Reservation   Reservation[]
+  BranchService BranchService[]
 
   @@map("services")
 }
 
 model Branch {
-  id          Int           @id @default(autoincrement())
-  name        String
-  location    String
-  openingTime DateTime
-  closingTime DateTime
-  services    Service[]
-  Reservation Reservation[]
+  id            Int             @id @default(autoincrement())
+  name          String
+  location      String
+  openingTime   DateTime
+  closingTime   DateTime
+  BranchService BranchService[]
+  Reservation   Reservation[]
 
   @@map("branches")
+}
+
+model BranchService {
+  id        Int     @id @default(autoincrement())
+  branchId  Int
+  branch    Branch  @relation(fields: [branchId], references: [id])
+  serviceId Int
+  service   Service @relation(fields: [serviceId], references: [id])
+
+  @@map("branch_services")
 }
 
 model Reservation {

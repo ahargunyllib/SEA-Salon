@@ -4,12 +4,9 @@ import {
 	AlertDialog,
 	AlertDialogAction,
 	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
+	AlertDialogContent, AlertDialogFooter,
 	AlertDialogHeader,
-	AlertDialogTitle,
-	AlertDialogTrigger,
+	AlertDialogTitle
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -19,22 +16,38 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { fetchServices } from "@/lib/data";
-import {
-	type BranchType,
-	type ServiceType,
-	dummyServices,
-} from "@/lib/placeholder-data";
 import { EllipsisIcon } from "lucide-react";
 import React from "react";
 import { EditBranchDialog } from "./EditBranchDialog";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import type { Branch, Service } from "@/lib/definitions";
 
 export async function BranchDropdown({
 	oldBranch,
 	services,
-}: { oldBranch: BranchType; services: ServiceType[] }) {
+}: { oldBranch: Branch; services: Service[] }) {
 	const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
+
+	const router = useRouter();
+
+	async function onClick() {
+		try {
+			const response = await fetch(`/api/branch/${oldBranch.id}`, {
+				method: "DELETE",
+			});
+
+			if (response.status === 200) {
+				toast.success("Branch deleted successfully");
+				router.refresh();
+			} else {
+				toast.error("An error occurred");
+			}
+		} catch (error) {
+			toast.error("An error occurred");
+		}
+	}
 
 	return (
 		<React.Fragment>
@@ -70,8 +83,11 @@ export async function BranchDropdown({
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<AlertDialogAction className="bg-destructive">
-							Continue
+						<AlertDialogAction
+							className="bg-destructive"
+							onClick={() => onClick()}
+						>
+							Yes
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>

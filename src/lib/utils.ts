@@ -60,3 +60,22 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
 		totalPages,
 	];
 };
+
+// time = "10:00"
+export function timeToDate(time: string) {
+	const [hours, minutes] = time.split(":").map(Number);
+	const date = new Date();
+	date.setHours(hours);
+	date.setMinutes(minutes);
+	return date;
+}
+
+// date: "2021-10-10"
+export function dateToDate(date: string) {
+	const [year, month, day] = date.split("-").map(Number);
+	const newDate = new Date();
+	newDate.setFullYear(year);
+	newDate.setMonth(month - 1);
+	newDate.setDate(day);
+	return newDate;
+}

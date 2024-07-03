@@ -14,8 +14,7 @@ import {
 	SheetContent,
 	SheetTrigger,
 } from "@/components/ui/sheet";
-import { dashboardMenus } from "@/lib/placeholder-data";
-import { CircleUser, Menu } from "lucide-react";
+import { CircleUser, FileCheck2Icon, HeartHandshakeIcon, MapPinIcon, Menu } from "lucide-react";
 import Link from "next/link";
 import { SideBar } from "../../components/SideBar";
 import { Logout } from "./Logout";
@@ -25,6 +24,16 @@ export default function DashboardLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	const dashboardMenus = [
+		{ title: "Services", path: "/dashboard/service", icon: HeartHandshakeIcon },
+		{ title: "Branch", path: "/dashboard/branch", icon: MapPinIcon },
+		{
+			title: "Reservation",
+			path: "/dashboard/reservation",
+			icon: FileCheck2Icon,
+		},
+	];
+	
 	return (
 		<div className="flex flex-col w-full h-screen divide-y-2">
 			<nav className="flex flex-row w-full h-16 divide-x-2">

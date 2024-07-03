@@ -4,15 +4,15 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import type { BranchType, ServiceType } from "@/lib/placeholder-data";
 import { EditBranchForm } from "./EditBranchForm";
+import type { Branch, Service } from "@/lib/definitions";
 
 export function EditBranchDialog({
 	oldBranch,
 	services,
 }: {
-	oldBranch: BranchType;
-	services: ServiceType[];
+	oldBranch: Branch;
+	services: Service[];
 }) {
 	return (
 		<DialogHeader>

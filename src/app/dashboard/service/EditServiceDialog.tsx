@@ -1,17 +1,13 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import {
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import type { ServiceType } from "@/lib/placeholder-data";
-import React from "react";
 import { EditServiceForm } from "./EditServiceForm";
+import type { Service } from "@/lib/definitions";
 
-export function EditServiceDialog({ oldService }: { oldService: ServiceType }) {
+export function EditServiceDialog({ oldService }: { oldService: Service }) {
 	return (
 		<DialogHeader>
 			<DialogTitle>Edit service</DialogTitle>

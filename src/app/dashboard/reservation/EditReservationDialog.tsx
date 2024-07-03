@@ -4,13 +4,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { BranchType, ReservationType } from "@/lib/placeholder-data";
 import { EditReservationForm } from "./EditReservationForm";
+import type { Branch, Reservation } from "@/lib/definitions";
 
 export function EditReservationDialog({
 	oldReservation,
 	branches,
-}: { oldReservation: ReservationType; branches: BranchType[] }) {
+}: { oldReservation: Reservation; branches: Branch[] }) {
 	return (
 		<DialogHeader>
 			<DialogTitle>Edit reservation</DialogTitle>

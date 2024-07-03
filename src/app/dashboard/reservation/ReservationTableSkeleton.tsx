@@ -7,9 +7,6 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { fetchFilteredReservations } from "@/lib/data";
-import { dummyReservations } from "@/lib/placeholder-data";
-import { getDate, getTime } from "@/lib/utils";
 
 export async function ReservationTableSkeleton() {
 	return (

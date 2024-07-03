@@ -5,10 +5,10 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import type { BranchType } from "@/lib/placeholder-data";
 import { NewReservationForm } from "./NewReservationForm";
+import type { Branch } from "@/lib/definitions";
 
-export function NewReservationDialog({ branches }: { branches: BranchType[] }) {
+export function NewReservationDialog({ branches }: { branches: Branch[] }) {
 	return (
 		<DialogHeader>
 			<DialogTitle>Add new reservation</DialogTitle>

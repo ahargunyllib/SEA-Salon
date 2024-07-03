@@ -7,10 +7,6 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { fetchFilteredBranches } from "@/lib/data";
-import { dummyBranches } from "@/lib/placeholder-data";
-import { getTime } from "@/lib/utils";
-import React from "react";
 
 export async function BranchTableSkeleton() {
 	return (

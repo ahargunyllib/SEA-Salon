@@ -1,25 +1,28 @@
 import { unstable_noStore } from "next/cache";
-import {
-	dummyBranches,
-	dummyReservations,
-	dummyServices,
-} from "./placeholder-data";
-import type { Review } from "./definitions";
-import { axiosInstance } from "./axios";
+import type { Branch, Reservation, Review, Service } from "./definitions";
+import { db } from "./prisma";
 
 export async function fetchReviews() {
-	try {
-		const response = await axiosInstance.get("/review")
-		const data = response.data;
+	unstable_noStore();
 
-		if (!data) {
-			throw new Error("Failed to fetch reviews data.");
-		}
-	
+	try {
+		const data = await db.review.findMany({
+			select: {
+				id: true,
+				comment: true,
+				rating: true,
+				user: {
+					select: {
+						fullName: true,
+					},
+				},
+			},
+		});
+
 		return data as Review[];
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	} catch (error: any) {
-		throw new Error(error.message);
+	} catch (error) {
+		console.log(error);
+		return [] as Review[];
 	}
 }
 
@@ -27,12 +30,16 @@ export async function fetchServices() {
 	unstable_noStore();
 
 	try {
-		// TODO: REMOVE
-		// await new Promise((resolve) => setTimeout(resolve, 3000));
+		const data = await db.service.findMany({
+			select: {
+				id: true,
+				name: true,
+				description: true,
+				duration: true,
+			},
+		});
 
-		const data = dummyServices;
-
-		return data;
+		return data as Service[];
 	} catch (error) {
 		throw new Error("Failed to fetch services data.");
 	}
@@ -42,11 +49,41 @@ export async function fetchBranches() {
 	unstable_noStore();
 
 	try {
-		// TODO: REMOVE
-		// await new Promise((resolve) => setTimeout(resolve, 3000));
+		const data = await db.branch.findMany({
+			select: {
+				id: true,
+				name: true,
+				location: true,
+				openingTime: true,
+				closingTime: true,
+			},
+		});
 
-		const data = dummyBranches;
-		return data;
+		const branch = [];
+
+		for (const d of data) {
+			const b = d as Branch;
+
+			const services = await db.branchService.findMany({
+				where: {
+					branchId: d.id,
+				},
+				select: {
+					service: {
+						select: {
+							id: true,
+							name: true,
+						},
+					},
+				},
+			});
+
+			b.services = services.map((service) => service.service);
+
+			branch.push(b);
+		}
+
+		return branch as Branch[];
 	} catch (error) {
 		throw new Error("Failed to fetch branches data.");
 	}
@@ -56,11 +93,32 @@ export async function fetchReservations() {
 	unstable_noStore();
 
 	try {
-		// TODO: REMOVE
-		// await new Promise((resolve) => setTimeout(resolve, 3000));
+		const data = await db.reservation.findMany({
+			select: {
+				id: true,
+				branchId: true,
+				branch: {
+					select: {
+						id: true,
+						name: true,
+					},
+				},
+				serviceId: true,
+				service: {
+					select: {
+						id: true,
+						name: true,
+					},
+				},
+				userId: true,
+				name: true,
+				phoneNumber: true,
+				date: true,
+				time: true,
+			},
+		});
 
-		const data = dummyReservations;
-		return data;
+		return data as Reservation[];
 	} catch (error) {
 		throw new Error("Failed to fetch reservations data.");
 	}
@@ -72,11 +130,18 @@ export async function fetchFilteredServices(currentPage: number) {
 	const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
 	try {
-		// TODO: REMOVE
-		// await new Promise((resolve) => setTimeout(resolve, 3000));
+		const data = await db.service.findMany({
+			select: {
+				id: true,
+				name: true,
+				description: true,
+				duration: true,
+			},
+			skip: offset,
+			take: ITEMS_PER_PAGE,
+		});
 
-		const data = dummyServices.slice(offset, offset + ITEMS_PER_PAGE);
-		return data;
+		return data as Service[];
 	} catch (error) {
 		throw new Error("Failed to fetch filtered services data.");
 	}
@@ -87,11 +152,43 @@ export async function fetchFilteredBranches(currentPage: number) {
 	const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
 	try {
-		// TODO: REMOVE
-		// await new Promise((resolve) => setTimeout(resolve, 3000));
+		const data = await db.branch.findMany({
+			select: {
+				id: true,
+				name: true,
+				location: true,
+				openingTime: true,
+				closingTime: true,
+			},
+			skip: offset,
+			take: ITEMS_PER_PAGE,
+		});
 
-		const data = dummyBranches.slice(offset, offset + ITEMS_PER_PAGE);
-		return data;
+		const branch = [];
+
+		for (const d of data) {
+			const b = d as Branch;
+
+			const services = await db.branchService.findMany({
+				where: {
+					branchId: d.id,
+				},
+				select: {
+					service: {
+						select: {
+							id: true,
+							name: true,
+						},
+					},
+				},
+			});
+
+			b.services = services.map((service) => service.service);
+
+			branch.push(b);
+		}
+
+		return data as Branch[];
 	} catch (error) {
 		throw new Error("Failed to fetch filtered branches data.");
 	}
@@ -102,11 +199,34 @@ export async function fetchFilteredReservations(currentPage: number) {
 	const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
 	try {
-		// TODO: REMOVE
-		// await new Promise((resolve) => setTimeout(resolve, 3000));
+		const data = await db.reservation.findMany({
+			select: {
+				id: true,
+				branchId: true,
+				branch: {
+					select: {
+						id: true,
+						name: true,
+					},
+				},
+				serviceId: true,
+				service: {
+					select: {
+						id: true,
+						name: true,
+					},
+				},
+				userId: true,
+				name: true,
+				phoneNumber: true,
+				date: true,
+				time: true,
+			},
+			skip: offset,
+			take: ITEMS_PER_PAGE,
+		});
 
-		const data = dummyReservations.slice(offset, offset + ITEMS_PER_PAGE);
-		return data;
+		return data as Reservation[];
 	} catch (error) {
 		throw new Error("Failed to fetch filtered reservations data.");
 	}
@@ -116,10 +236,8 @@ export async function fetchServicesPages() {
 	unstable_noStore();
 
 	try {
-		// TODO: REMOVE
-		// await new Promise((resolve) => setTimeout(resolve, 3000));
+		const count = await db.service.count();
 
-		const count = dummyServices.length;
 		const totalPages = Math.ceil(count / ITEMS_PER_PAGE);
 		return totalPages;
 	} catch (error) {
@@ -129,11 +247,10 @@ export async function fetchServicesPages() {
 
 export async function fetchBranchesPages() {
 	unstable_noStore();
-	try {
-		// TODO: REMOVE
-		// await new Promise((resolve) => setTimeout(resolve, 3000));
 
-		const count = dummyBranches.length;
+	try {
+		const count = await db.branch.count();
+
 		const totalPages = Math.ceil(count / ITEMS_PER_PAGE);
 		return totalPages;
 	} catch (error) {
@@ -143,11 +260,10 @@ export async function fetchBranchesPages() {
 
 export async function fetchReservationsPages() {
 	unstable_noStore();
-	try {
-		// TODO: REMOVE
-		// await new Promise((resolve) => setTimeout(resolve, 3000));
 
-		const count = dummyReservations.length;
+	try {
+		const count = await db.reservation.count();
+
 		const totalPages = Math.ceil(count / ITEMS_PER_PAGE);
 		return totalPages;
 	} catch (error) {
